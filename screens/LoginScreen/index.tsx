@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet, Alert, Image } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 import Button from "../../components/Button";
@@ -36,7 +36,6 @@ function LoginScreen({ navigation }: TypePropsNavigation) {
   };
 
   const handleLogin = async () => {
-
     try {
       const isLoggedIn = await loginUserAsync(email, password);
 
@@ -44,10 +43,10 @@ function LoginScreen({ navigation }: TypePropsNavigation) {
 
       if (isLoggedIn) {
         Toast.show({
-          type: 'success',
-          position: 'top',
-          text1: 'Login bem-sucedido',
-          text2: 'Você foi logado com sucesso!',
+          type: "success",
+          position: "top",
+          text1: "Login bem-sucedido",
+          text2: "Você foi logado com sucesso!",
           visibilityTime: 4000,
           autoHide: true,
           topOffset: 30,
@@ -56,9 +55,9 @@ function LoginScreen({ navigation }: TypePropsNavigation) {
         navigation.navigate("Home");
       } else {
         Toast.show({
-          type: 'error',
-          text1: 'Falha no login',
-          text2: 'Email ou senha incorretos. Por favor, tente novamente.',
+          type: "error",
+          text1: "Falha no login",
+          text2: "Email ou senha incorretos. Por favor, tente novamente.",
           visibilityTime: 4000,
           autoHide: true,
         });
@@ -66,9 +65,9 @@ function LoginScreen({ navigation }: TypePropsNavigation) {
     } catch (error) {
       setIsLoggedIn(false);
       Toast.show({
-        type: 'error',
-        text1: 'Erro',
-        text2: 'Ocorreu um erro ao tentar fazer login. Por favor, tente novamente mais tarde.',
+        type: "error",
+        text1: "Erro",
+        text2: "Ocorreu um erro ao tentar fazer login. Por favor, tente novamente mais tarde.",
         visibilityTime: 4000,
         autoHide: true,
       });
@@ -84,9 +83,9 @@ function LoginScreen({ navigation }: TypePropsNavigation) {
 
   return (
     <View style={styles.container}>
-      <Text>Login Screen</Text>
       <View style={styles.container}>
-        <Input
+        <Image source={require("../../assets/images/logo.png")} style={styles.logo} />
+        {/* <Input
           placeholder=""
           label="Usuário"
           id="usuario"
@@ -95,7 +94,7 @@ function LoginScreen({ navigation }: TypePropsNavigation) {
           onChangeText={(text) => setUser(text)}
           returnKeyType="next"
           onSubmitEditing={() => passwordRef.current?.focus()}
-        />
+        /> */}
         <Input
           placeholder=""
           label="Senha"
@@ -119,13 +118,19 @@ function LoginScreen({ navigation }: TypePropsNavigation) {
           onSubmitEditing={handleLogin}
           ref={emailRef}
         />
-        <Button title="Entrar" onPress={handleLogin} type="login" />
+        <View style={styles.containerBottons}>
+          <Button title="Entrar" onPress={handleLogin} type="login" />
+          <Button
+            title="Registrar-se"
+            type="redirecionar"
+            onPress={() => {
+              Alert.alert("teste: " + isLoggedIn);
+              setIsLoggedIn(false);
+              navigation.navigate("Home");
+            }}
+          />
+        </View>
       </View>
-      <Button title="Login" onPress={() => {
-        Alert.alert("teste: " + isLoggedIn)
-        setIsLoggedIn(false);
-        navigation.navigate("Home");
-      }} />
     </View>
   );
 }
@@ -137,6 +142,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#dadada",
   },
+  logo: {
+    width: 250,
+    height: 250,
+    marginBottom: 5,
+  },
+  containerBottons: {
+    minWidth: "70%",
+    maxWidth: "90%",
+    display: "flex",
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  }
 });
 
 export default LoginScreen;

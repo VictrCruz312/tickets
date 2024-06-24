@@ -6,7 +6,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 interface ButtonProps {
   title: string;
   onPress: () => void;
-  type?: "login" | "cancelar" | "salvar" | "deletar";
+  type?: "login" | "cancelar" | "salvar" | "deletar" | 'redirecionar';
 }
 
 const Button: React.FC<ButtonProps> = ({ title, onPress, type = "login" }) => {
@@ -20,6 +20,8 @@ const Button: React.FC<ButtonProps> = ({ title, onPress, type = "login" }) => {
         return "save";
       case "deletar":
         return "delete";
+      case "redirecionar":
+        return "person-add";
       default:
         return "error";
     }
@@ -61,6 +63,9 @@ const styles = StyleSheet.create({
   },
   deletar: {
     backgroundColor: "#dc3545",
+  },
+  redirecionar: {
+    backgroundColor: "#17a2b8",
   },
 });
 

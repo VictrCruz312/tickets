@@ -9,7 +9,7 @@ import { initDBAsync, insertFakeTickets } from "./database";
 import Toast from "react-native-toast-message";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 const Stack = createNativeStackNavigator();
@@ -79,7 +79,7 @@ export default function App() {
             options={{
               headerTitle: () => (
                 <View style={styles.headerTitle}>
-                  <MaterialIcons name="confirmation-number" size={24} color="#007e7c" style={styles.headerIcon} />
+                  <Image source={require("./assets/images/logo.png")} style={styles.logo} />
                   <Text style={styles.headerText}>TI-ckets</Text>
                 </View>
               ),
@@ -107,4 +107,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#007e7c',
   },
+  logo: {
+    width: 29,
+    height: 29,
+    marginRight: 5,
+    marginTop: 1,
+  }
 });

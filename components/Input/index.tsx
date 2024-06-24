@@ -32,7 +32,7 @@ const Input = forwardRef<TextInput, InputProps>(({ type, label, required = false
   }, [value, required, validate]);
 
    // Calcula a cor da borda diretamente com base no estado atual de `isValid`
-   const borderColor = isValid === undefined ? 'gray' : isValid ? 'green' : 'red';
+   const borderColor = isValid === undefined ? 'gray' : isValid ? '#007e7c' : '#dc3545';
 
   switch (type) {
     case 'number':
@@ -59,6 +59,7 @@ const Input = forwardRef<TextInput, InputProps>(({ type, label, required = false
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "relative",
     marginBottom: 15,
     position: "relative"
   },
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
   label: {
     position: 'absolute',
     zIndex: 1,
-    backgroundColor: '#dadada',
+    backgroundColor: 'relative',
     top: -12,
     left: 20,
     paddingHorizontal: 10,
