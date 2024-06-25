@@ -59,7 +59,7 @@ const Input = forwardRef<TextInput, InputProps>(({ type, label, required = false
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "relative",
+    backgroundColor: "#dadada",
     marginBottom: 15,
     position: "relative"
   },
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   label: {
     position: 'absolute',
     zIndex: 1,
-    backgroundColor: 'relative',
+    backgroundColor: '#dadada',
     top: -12,
     left: 20,
     paddingHorizontal: 10,

@@ -98,16 +98,27 @@ export async function getTicketDetailsAsync(ticketId: number): Promise<Ticket | 
 }
 
 export async function insertFakeTickets() {
+  const db = await SQLite.openDatabaseAsync("db.database");
+  await db.runAsync("DELETE FROM tickets");
   for (let i = 1; i <= 10; i++) {
     await insertTicketAsync(
       `Titulo ${i}`,
       `Descricao para o ticket ${i}`,
       `Solicitante ${i}`,
       new Date().toISOString(),
-      `Status ${i % 2 === 0 ? '1' : '2'}`
+      `${i % 2 === 0 ? '1' : '2'}`
     );
   }
-  console.log('10 tickets fictícios inseridos com sucesso.');
+  for (let i = 11; i <= 20; i++) {
+    await insertTicketAsync(
+      `Titulo ${i}`,
+      `Descricao para o ticket ${i}`,
+      `Solicitante ${i}`,
+      new Date().toISOString(),
+      `${i % 2 === 0 ? '3' : '4'}`
+    );
+  }
+  console.log('20 tickets fictícios inseridos com sucesso.');
 }
 
 export async function deleteTicketAsync(ticketId: number): Promise<void> {
