@@ -1,4 +1,4 @@
-import "reflect-metadata";
+import { registerRootComponent } from 'expo';
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -11,6 +11,9 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { enableScreens } from 'react-native-screens';
+
+enableScreens();
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -91,6 +94,8 @@ export default function App() {
     </AuthProvider>
   );
 }
+
+registerRootComponent(App);
 
 const styles = StyleSheet.create({
   logoutButton: {

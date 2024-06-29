@@ -16,9 +16,13 @@ function TicketDetailsScreen() {
        const ticketId = route.params?.ticketId;
 
        if (ticketId && Number(ticketId)) {
-        const details = await getTicketDetailsAsync(Number(ticketId));
+        try {
+          const details = await getTicketDetailsAsync(Number(ticketId));
 
-        setTicketDetails(details);
+          setTicketDetails(details);
+        } catch (error) {
+          console.log("details: " + error);
+        }
       }
     };
 
