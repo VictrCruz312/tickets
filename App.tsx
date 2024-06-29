@@ -13,6 +13,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { enableScreens } from 'react-native-screens';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import RegisterScreen from './screens/RegisterScreen';
 
 enableScreens();
 
@@ -78,6 +79,7 @@ export default function App() {
             <NavigationContainer>
               <Stack.Navigator initialRouteName="Home">
                 <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Logar" }} />
+                <Stack.Screen name="Register" component={RegisterScreen} options={{ title: "Registrar" }} />
                 <Stack.Screen
                   name="Home"
                   component={withProtectedRoute(DrawerNavigator)}

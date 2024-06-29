@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, StyleSheet, Alert, Image } from "react-native";
+import { View, Text, StyleSheet, Alert, Image, TextInput } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 import Button from "../../components/Button";
 import Input from "../../components/Input";
-import { TextInput } from "react-native-gesture-handler";
 import { loginUserAsync } from "../../database";
 import Toast from "react-native-toast-message";
 import { useAuth } from "../../context/AuthContext";
@@ -12,6 +11,7 @@ import { useAuth } from "../../context/AuthContext";
 type TypeRootStackParamList = {
   Login: undefined;
   Home: undefined;
+  Register: undefined;
 };
 
 type LoginScreenNavigationProp = StackNavigationProp<TypeRootStackParamList, "Login">;
@@ -21,7 +21,6 @@ export type TypePropsNavigation = {
 };
 
 function LoginScreen({ navigation }: TypePropsNavigation) {
-  const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const { isLoggedIn, setIsLoggedIn } = useAuth();
@@ -29,11 +28,6 @@ function LoginScreen({ navigation }: TypePropsNavigation) {
   // Refs para os campos de entrada
   const passwordRef = useRef<TextInput>(null);
   const emailRef = useRef<TextInput>(null);
-
-  // Função para simular o clique do botão "Cadastrar"
-  const handleRegisterPress = () => {
-    alert("Botão pressionado!");
-  };
 
   const handleLogin = async () => {
     try {
@@ -85,16 +79,6 @@ function LoginScreen({ navigation }: TypePropsNavigation) {
     <View style={styles.container}>
       <View style={styles.container}>
         <Image source={require("../../assets/images/logo.png")} style={styles.logo} />
-        {/* <Input
-          placeholder=""
-          label="Usuário"
-          id="usuario"
-          required={false}
-          value={user}
-          onChangeText={(text) => setUser(text)}
-          returnKeyType="next"
-          onSubmitEditing={() => passwordRef.current?.focus()}
-        /> */}
         <Input
           placeholder=""
           label="Senha"
@@ -122,11 +106,10 @@ function LoginScreen({ navigation }: TypePropsNavigation) {
           <Button title="Entrar" onPress={handleLogin} type="login" />
           <Button
             title="Registrar-se"
-            type="redirecionar"
+            type="cadastrar"
             onPress={() => {
-              Alert.alert("teste: " + isLoggedIn);
               setIsLoggedIn(false);
-              navigation.navigate("Home");
+              navigation.navigate("Register");
             }}
           />
         </View>
