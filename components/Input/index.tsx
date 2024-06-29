@@ -1,5 +1,6 @@
 import React, {forwardRef, useEffect, useState} from 'react';
 import { TextInput, TextInputProps, StyleSheet, View, Text } from 'react-native';
+import { useForm } from '../../context/FormContext';
 
 export interface InputProps extends TextInputProps {
   type?: 'string' | 'number' | 'password';
@@ -10,9 +11,10 @@ export interface InputProps extends TextInputProps {
   validate?: (value: InputProps["value"]) => boolean;
 }
 
-const Input = forwardRef<TextInput, InputProps>(({ type, label, required = false, value, validate, ...rest }: InputProps, ref) => {
+const Input = forwardRef<TextInput, InputProps>(({ id, type, label, required = false, value, validate, ...rest }: InputProps, ref) => {
   let keyboardType: TextInputProps['keyboardType'] = 'default';
   let secureTextEntry = false;
+  const { setFieldValidity } = useForm();
 
   const [isValid, setIsValid] = useState<boolean | undefined>(undefined);
 
@@ -29,7 +31,8 @@ const Input = forwardRef<TextInput, InputProps>(({ type, label, required = false
     }
 
     setIsValid(validation);
-  }, [value, required, validate]);
+    setFieldValidity(id, validation || true);
+  }, [value, required, validate, id, setFieldValidity]);
 
    // Calcula a cor da borda diretamente com base no estado atual de `isValid`
    const borderColor = isValid === undefined ? 'gray' : isValid ? '#007e7c' : '#dc3545';
