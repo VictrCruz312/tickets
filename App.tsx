@@ -12,6 +12,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { enableScreens } from 'react-native-screens';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 enableScreens();
 
@@ -73,24 +74,26 @@ export default function App() {
 
   return (
     <AuthProvider>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Logar" }} />
-          <Stack.Screen
-            name="Home"
-            component={withProtectedRoute(DrawerNavigator)}
-            options={{
-              headerTitle: () => (
-                <View style={styles.headerTitle}>
-                  <Image source={require("./assets/images/logo.png")} style={styles.logo} />
-                  <Text style={styles.headerText}>TI-ckets</Text>
-                </View>
-              ),
-            }}
-          />
-        </Stack.Navigator>
-        <Toast />
-      </NavigationContainer>
+      <SafeAreaProvider>
+            <NavigationContainer>
+              <Stack.Navigator initialRouteName="Home">
+                <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Logar" }} />
+                <Stack.Screen
+                  name="Home"
+                  component={withProtectedRoute(DrawerNavigator)}
+                  options={{
+                    headerTitle: () => (
+                      <View style={styles.headerTitle}>
+                        <Image source={require("./assets/images/logo.png")} style={styles.logo} />
+                        <Text style={styles.headerText}>TI-ckets</Text>
+                      </View>
+                    ),
+                  }}
+                />
+              </Stack.Navigator>
+              <Toast />
+            </NavigationContainer>
+      </SafeAreaProvider>
     </AuthProvider>
   );
 }
