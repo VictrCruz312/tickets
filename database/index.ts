@@ -9,6 +9,13 @@ export interface Ticket {
   status: string;
 }
 
+export interface IRegisterUserProps {
+  email: string;
+  password: string;
+  name: string;
+}
+
+
 // Função assíncrona para inicializar o banco de dados e criar a tabela `user`
 export async function initDBAsync() {
   const db = await SQLite.openDatabaseAsync("db.database");
@@ -125,3 +132,30 @@ export async function deleteTicketAsync(ticketId: number): Promise<void> {
   const db = await SQLite.openDatabaseAsync("db.database");
   await db.runAsync("DELETE FROM tickets WHERE id = ?", [ticketId]);
 }
+
+export const RegisterUserAsync = async ({ email, password, name }: IRegisterUserProps): Promise<boolean> => {
+  const db = await SQLite.openDatabaseAsync("db.database");
+
+  if (!email.trim() || !password.trim() || !name.trim()) {
+    console.error('Todos os campos devem ser preenchidos.');
+    return false;
+  }
+
+  try {
+    const query = `INSERT INTO user (name, email, password) VALUES (?, ?, ?)`;
+    const args = [name, email, password];
+    let operationSuccess = false;
+
+    await db.withTransactionAsync(async () => {
+      const result = await db.runAsync(query, args);
+      if (result.changes > 0) {
+        operationSuccess = true;
+      }
+    });
+
+    return operationSuccess;
+  } catch (error) {
+    console.error('Erro ao registrar usuário:', error);
+    return false;
+  }
+};
