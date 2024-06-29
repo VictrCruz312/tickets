@@ -1,15 +1,16 @@
 // components/Button/index.tsx
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
+import { TouchableOpacity, Text, StyleSheet, View, StyleProp, ViewStyle } from "react-native";
 import { MaterialIcons } from '@expo/vector-icons';
 
 interface ButtonProps {
   title: string;
   onPress: () => void;
-  type?: "login" | "cancelar" | "salvar" | "deletar" | 'redirecionar';
+  type?: "login" | "cancelar" | "salvar" | "deletar" | 'cadastrar';
+  style?: StyleProp<ViewStyle>;
 }
 
-const Button: React.FC<ButtonProps> = ({ title, onPress, type = "login" }) => {
+const Button: React.FC<ButtonProps> = ({ title, onPress, type = "login", style }) => {
   const getIconName = (type: string) => {
     switch (type) {
       case "login":
@@ -20,7 +21,7 @@ const Button: React.FC<ButtonProps> = ({ title, onPress, type = "login" }) => {
         return "save";
       case "deletar":
         return "delete";
-      case "redirecionar":
+      case "cadastrar":
         return "person-add";
       default:
         return "error";
@@ -28,7 +29,7 @@ const Button: React.FC<ButtonProps> = ({ title, onPress, type = "login" }) => {
   };
 
   return (
-    <TouchableOpacity style={[styles.button, styles[type]]} onPress={onPress}>
+    <TouchableOpacity style={[styles.button, styles[type], style]} onPress={onPress}>
       <View style={styles.iconContainer}>
          <MaterialIcons name={getIconName(type)} size={24} color="#fff" />
       </View>
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
   deletar: {
     backgroundColor: "#dc3545",
   },
-  redirecionar: {
+  cadastrar: {
     backgroundColor: "#17a2b8",
   },
 });
