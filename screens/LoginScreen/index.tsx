@@ -46,7 +46,6 @@ function LoginScreen({ navigation }: TypePropsNavigation) {
           topOffset: 30,
         });
 
-        navigation.navigate("Home");
       } else {
         Toast.show({
           type: "error",
@@ -73,7 +72,7 @@ function LoginScreen({ navigation }: TypePropsNavigation) {
     if (isLoggedIn) {
       navigation.navigate("Home");
     }
-  }, []);
+  }, [isLoggedIn]);
 
   return (
     <View style={styles.container}>
@@ -108,7 +107,6 @@ function LoginScreen({ navigation }: TypePropsNavigation) {
             title="Registrar-se"
             type="cadastrar"
             onPress={() => {
-              setIsLoggedIn(false);
               navigation.navigate("Register");
             }}
           />

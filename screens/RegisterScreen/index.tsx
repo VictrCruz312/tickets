@@ -84,8 +84,6 @@ function RegisterScreen({ navigation }: TypePropsNavigation) {
     }
   };
 
-  useEffect(() => {}, []);
-
   return (
     <FormProvider>
       <View style={styles.container}>
@@ -97,6 +95,7 @@ function RegisterScreen({ navigation }: TypePropsNavigation) {
             id="usuario"
             required={true}
             value={name}
+            validate={(value) => /^[a-zA-Z\s]+$/.test(value) && name.length >= 2 && name.length <= 50}
             onChangeText={(text) => setName(text)}
             returnKeyType="next"
             onSubmitEditing={() => passwordRef.current?.focus()}
@@ -107,6 +106,7 @@ function RegisterScreen({ navigation }: TypePropsNavigation) {
             id="senha"
             required={true}
             value={password}
+            validate={value => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value)}
             onChangeText={(text) => setPassword(text)}
             type="password"
             returnKeyType="next"
@@ -119,6 +119,7 @@ function RegisterScreen({ navigation }: TypePropsNavigation) {
             id="email"
             required={true}
             value={email}
+            validate={(value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)}
             onChangeText={(text) => setEmail(text)}
             returnKeyType="done"
             onSubmitEditing={handleRegisterPress}
