@@ -14,7 +14,7 @@ export interface InputProps extends TextInputProps {
 const Input = forwardRef<TextInput, InputProps>(({ id, type, label, required = false, value, validate, ...rest }: InputProps, ref) => {
   let keyboardType: TextInputProps['keyboardType'] = 'default';
   let secureTextEntry = false;
-  const { setFieldValidity } = useForm();
+  const { setFieldValidity, isContextAvailable } = useForm();
 
   const [isValid, setIsValid] = useState<boolean | undefined>(undefined);
 
@@ -30,9 +30,12 @@ const Input = forwardRef<TextInput, InputProps>(({ id, type, label, required = f
       validation = undefined;
     }
 
+
     setIsValid(validation);
-    setFieldValidity(id, validation || true);
-  }, [value, required, validate, id, setFieldValidity]);
+    if (isContextAvailable && isValid !== validation) {
+      setFieldValidity(id, validation || true);
+    }
+  }, [value, required, validate, id]);
 
    // Calcula a cor da borda diretamente com base no estado atual de `isValid`
    const borderColor = isValid === undefined ? 'gray' : isValid ? '#007e7c' : '#dc3545';

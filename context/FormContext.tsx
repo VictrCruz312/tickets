@@ -3,6 +3,7 @@ import React, { ReactNode, createContext, useContext, useState } from "react";
 interface IFormContext {
   setFieldValidity: (fieldId: string, isValid: boolean) => void;
   isFormValid: () => boolean;
+  isContextAvailable: boolean;
 }
 
 interface FormProviderProps {
@@ -25,6 +26,7 @@ export const useForm = () => {
 
 export const FormProvider = ({ children }: FormProviderProps) => {
   const [fieldValidity, setFieldValidityState] = useState<{ [key: string]: boolean }>({});
+  const [isContextAvailable] = useState< boolean>(true);
 
   const setFieldValidity = (fieldId: string, isValid: boolean) => {
     setFieldValidityState((prev) => ({ ...prev, [fieldId]: isValid }));
@@ -34,5 +36,5 @@ export const FormProvider = ({ children }: FormProviderProps) => {
     return Object.values(fieldValidity).every((isValid) => isValid);
   };
 
-  return <FormContext.Provider value={{ setFieldValidity, isFormValid }}>{children}</FormContext.Provider>;
+  return <FormContext.Provider value={{ setFieldValidity, isFormValid, isContextAvailable }}>{children}</FormContext.Provider>;
 };
