@@ -106,26 +106,30 @@ export async function getTicketDetailsAsync(ticketId: number): Promise<Ticket | 
 
 export async function insertFakeTickets() {
   const db = await SQLite.openDatabaseAsync("db.database");
-  await db.runAsync("DELETE FROM tickets");
-  for (let i = 1; i <= 10; i++) {
-    await insertTicketAsync(
-      `Titulo ${i}`,
-      `Descricao para o ticket ${i}`,
-      `Solicitante ${i}`,
-      new Date().toISOString(),
-      `${i % 2 === 0 ? '1' : '2'}`
-    );
+  const result: any = await db.getAllAsync("SELECT COUNT(*) AS CONTAR FROM tickets");
+  let contador = result[0]?.contar;
+
+  if (contador < 15) {
+    for (let i = 1; i <= 10; i++) {
+      await insertTicketAsync(
+        `Titulo ${i}`,
+        `Descricao para o ticket ${i}`,
+        `Solicitante ${i}`,
+        new Date().toISOString(),
+        `${i % 2 === 0 ? '1' : '2'}`
+      );
+    }
+    for (let i = 11; i <= 20; i++) {
+      await insertTicketAsync(
+        `Titulo ${i}`,
+        `Descricao para o ticket ${i}`,
+        `Solicitante ${i}`,
+        new Date().toISOString(),
+        `${i % 2 === 0 ? '3' : '4'}`
+      );
+    }
+    console.log('20 tickets fictícios inseridos com sucesso.');
   }
-  for (let i = 11; i <= 20; i++) {
-    await insertTicketAsync(
-      `Titulo ${i}`,
-      `Descricao para o ticket ${i}`,
-      `Solicitante ${i}`,
-      new Date().toISOString(),
-      `${i % 2 === 0 ? '3' : '4'}`
-    );
-  }
-  console.log('20 tickets fictícios inseridos com sucesso.');
 }
 
 export async function deleteTicketAsync(ticketId: number): Promise<void> {

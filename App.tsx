@@ -62,8 +62,7 @@ export default function App() {
   useEffect(() => {
     async function init() {
       await initDBAsync();
-      // await insertUserAsync("admin","admin@mail.com","123");
-      // await insertFakeTickets();
+      await insertFakeTickets();
     }
 
     try {
