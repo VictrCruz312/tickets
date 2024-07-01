@@ -4,6 +4,8 @@ interface IFormContext {
   setFieldValidity: (fieldId: string, isValid: boolean) => void;
   isFormValid: () => boolean;
   isContextAvailable: boolean;
+  validationTriggered: boolean;
+  resetValidationTrigger: () => void;
 }
 
 interface FormProviderProps {
@@ -19,6 +21,8 @@ export const useForm = () => {
       isContextAvailable: false,
       setFieldValidity: () => {},
       isFormValid: () => true, // Supõe-se que seja válido se não estiver dentro de um FormProvider
+      validationTriggered: false,
+      resetValidationTrigger: () => {},
     };
   }
   return context;
@@ -33,8 +37,16 @@ export const FormProvider = ({ children }: FormProviderProps) => {
   };
 
   const isFormValid = () => {
+    setValidationTriggered(true);
+
     return Object.values(fieldValidity).every((isValid) => isValid);
   };
 
-  return <FormContext.Provider value={{ setFieldValidity, isFormValid, isContextAvailable }}>{children}</FormContext.Provider>;
+  const [validationTriggered, setValidationTriggered] = useState(false);
+
+  const resetValidationTrigger = () => {
+    setValidationTriggered(false);
+  };
+
+  return <FormContext.Provider value={{ setFieldValidity, isFormValid, isContextAvailable, validationTriggered, resetValidationTrigger}}>{children}</FormContext.Provider>;
 };

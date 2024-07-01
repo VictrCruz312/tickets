@@ -4,7 +4,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 
 import Button from "../../components/Button";
 import Input from "../../components/Input";
-import { RegisterUserAsync, loginUserAsync } from "../../database";
+import { RegisterUserAsync, emailExistsAsync, loginUserAsync } from "../../database";
 import Toast from "react-native-toast-message";
 import { useAuth } from "../../context/AuthContext";
 import { FormProvider, useForm } from "../../context/FormContext";
@@ -25,16 +25,29 @@ function RegisterScreen({ navigation }: TypePropsNavigation) {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const { isLoggedIn, setIsLoggedIn } = useAuth();
+  const { setIsLoggedIn } = useAuth();
   const { isFormValid } = useForm();
+  const [emailError, setEmailError] = useState('');
+
 
   // Refs para os campos de entrada
+  const nameRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
   const emailRef = useRef<TextInput>(null);
 
-  // Função para simular o clique do botão "Cadastrar"
+  const validateEmail = async (email: string) => {
+    const exists = await emailExistsAsync(email);
+    if (exists) {
+      setEmailError('E-mail já cadastrado');
+      return false;
+    } else {
+      setEmailError('');
+      return true;
+    }
+  };
+
   const handleRegisterPress = async () => {
-    if (!isFormValid) {
+    if (!isFormValid()) {
       Toast.show({
         type: "error",
         text1: "Campos inválidos",
@@ -45,7 +58,20 @@ function RegisterScreen({ navigation }: TypePropsNavigation) {
 
       return;
     }
+
     try {
+      const emailValido = await validateEmail(email);
+      if (!emailValido) {
+        Toast.show({
+          type: "error",
+          text1: "Falha ao Registrar",
+          text2: "Email já existe! Por favor insira um novo Email.",
+          visibilityTime: 4000,
+          autoHide: true,
+        });
+        return;
+      };
+
       const registrado = await RegisterUserAsync({ email, password, name });
 
       if (registrado) {
@@ -59,7 +85,7 @@ function RegisterScreen({ navigation }: TypePropsNavigation) {
           topOffset: 30,
         });
 
-        setIsLoggedIn(isLoggedIn);
+        setIsLoggedIn(true);
         navigation.navigate("Home");
       } else {
         Toast.show({
@@ -84,58 +110,72 @@ function RegisterScreen({ navigation }: TypePropsNavigation) {
     }
   };
 
+  useEffect(() => {
+    setEmailError("");
+  }, [email])
+
   return (
-    <FormProvider>
+    <View style={styles.container}>
       <View style={styles.container}>
-        <View style={styles.container}>
-          <Image source={require("../../assets/images/logo.png")} style={styles.logo} />
-          <Input
-            placeholder=""
-            label="Usuário"
-            id="usuario"
-            required={true}
-            value={name}
-            validate={(value) => /^[a-zA-Z\s]+$/.test(value) && name.length >= 2 && name.length <= 50}
-            onChangeText={(text) => setName(text)}
-            returnKeyType="next"
-            onSubmitEditing={() => passwordRef.current?.focus()}
+        <Image source={require("../../assets/images/logo.png")} style={styles.logo} />
+        <Input
+          placeholder=""
+          label="Usuário"
+          id="usuario"
+          required={true}
+          value={name}
+          validate={(value) =>
+            /^[a-zA-Z\s\d]+$/.test(value) && value.length >= 2 && value.length <= 50
+              ? { valid: true }
+              : { valid: false, msg: "Usuário inválido" }
+          }
+          onChangeText={(text) => setName(text)}
+          returnKeyType="next"
+          onSubmitEditing={() => emailRef.current?.focus()}
+          ref={nameRef}
+        />
+        <Input
+          placeholder=""
+          label="Email"
+          id="email"
+          required={true}
+          value={email}
+          validate={(value) => {
+            return { valid: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) && !emailError, msg: emailError || "Email inválido" };
+          }}
+          onChangeText={(text) => setEmail(text)}
+          returnKeyType="done"
+          onSubmitEditing={() => passwordRef.current?.focus()}
+          ref={emailRef}
+        />
+        <Input
+          placeholder=""
+          label="Senha"
+          id="senha"
+          required={true}
+          value={password}
+          validate={(value) => {
+            return {
+              valid: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?.&])[A-Za-z\d@$!%*?.&]{8,}$/.test(value),
+              msg: "Senha fraca",
+            };
+          }}
+          onChangeText={(text) => setPassword(text)}
+          type="password"
+          returnKeyType="next"
+          onSubmitEditing={handleRegisterPress}
+          ref={passwordRef}
+        />
+        <View style={styles.containerBottom}>
+          <Button
+            title="Cadastrar"
+            type="salvar"
+            onPress={handleRegisterPress}
+            style={{ minWidth: "70%", maxWidth: "90%" }}
           />
-          <Input
-            placeholder=""
-            label="Senha"
-            id="senha"
-            required={true}
-            value={password}
-            validate={value => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value)}
-            onChangeText={(text) => setPassword(text)}
-            type="password"
-            returnKeyType="next"
-            onSubmitEditing={() => emailRef.current?.focus()}
-            ref={passwordRef}
-          />
-          <Input
-            placeholder=""
-            label="Email"
-            id="email"
-            required={true}
-            value={email}
-            validate={(value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)}
-            onChangeText={(text) => setEmail(text)}
-            returnKeyType="done"
-            onSubmitEditing={handleRegisterPress}
-            ref={emailRef}
-          />
-          <View style={styles.containerBottom}>
-            <Button
-              title="Cadastrar"
-              type="salvar"
-              onPress={handleRegisterPress}
-              style={{ minWidth: "70%", maxWidth: "90%" }}
-            />
-          </View>
         </View>
       </View>
-    </FormProvider>
+    </View>
   );
 }
 

@@ -146,12 +146,12 @@ export const RegisterUserAsync = async ({ email, password, name }: IRegisterUser
     const args = [name, email, password];
     let operationSuccess = false;
 
-    await db.withTransactionAsync(async () => {
-      const result = await db.runAsync(query, args);
-      if (result.changes > 0) {
-        operationSuccess = true;
-      }
-    });
+    const result = await db.runAsync(query, args);
+
+    if (result.changes > 0) {
+      operationSuccess = true;
+    }
+
 
     return operationSuccess;
   } catch (error) {
@@ -159,3 +159,9 @@ export const RegisterUserAsync = async ({ email, password, name }: IRegisterUser
     return false;
   }
 };
+
+export async function emailExistsAsync(email: string): Promise<boolean> {
+  const db = await SQLite.openDatabaseAsync("db.database");
+  const result = await db.getAllAsync("SELECT email FROM user WHERE email = ?", [email]);
+  return result.length > 0;
+}

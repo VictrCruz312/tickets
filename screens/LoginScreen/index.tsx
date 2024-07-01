@@ -45,7 +45,6 @@ function LoginScreen({ navigation }: TypePropsNavigation) {
           autoHide: true,
           topOffset: 30,
         });
-
       } else {
         Toast.show({
           type: "error",
@@ -80,6 +79,17 @@ function LoginScreen({ navigation }: TypePropsNavigation) {
         <Image source={require("../../assets/images/logo.png")} style={styles.logo} />
         <Input
           placeholder=""
+          label="Email"
+          id="email"
+          required={true}
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          returnKeyType="done"
+          onSubmitEditing={() => passwordRef.current?.focus()}
+          ref={emailRef}
+        />
+        <Input
+          placeholder=""
           label="Senha"
           id="senha"
           required={true}
@@ -87,19 +97,8 @@ function LoginScreen({ navigation }: TypePropsNavigation) {
           onChangeText={(text) => setPassword(text)}
           type="password"
           returnKeyType="next"
-          onSubmitEditing={() => emailRef.current?.focus()}
-          ref={passwordRef}
-        />
-        <Input
-          placeholder=""
-          label="Email"
-          id="email"
-          required={true}
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-          returnKeyType="done"
           onSubmitEditing={handleLogin}
-          ref={emailRef}
+          ref={passwordRef}
         />
         <View style={styles.containerBottons}>
           <Button title="Entrar" onPress={handleLogin} type="login" />
@@ -136,7 +135,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-  }
+  },
 });
 
 export default LoginScreen;
