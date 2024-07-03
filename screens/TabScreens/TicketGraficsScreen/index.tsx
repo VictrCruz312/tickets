@@ -4,15 +4,13 @@ import { PieChart } from "react-native-chart-kit";
 import { getTicketsAsync } from "../../../database";
 import { Ticket } from "../../../database";
 import Carousel from "react-native-reanimated-carousel";
+import { useIsFocused } from '@react-navigation/native';
 
 const screenWidth = Dimensions.get("window").width;
 
 function TicketsGraficScreen() {
   const [items, setItems] = useState<Ticket[]>([]);
-  const [isCarouselPaused, setIsCarouselPaused] = useState(false);
-  // const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
-
-  // const carouselRef = useRef<Carousel<Ticket>>(null);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchTickets = async () => {
@@ -22,18 +20,6 @@ function TicketsGraficScreen() {
 
     fetchTickets();
   }, []);
-
-  // useEffect(() => {
-  //   if (!isCarouselPaused) {
-  //     autoPlayRef.current = setTimeout(() => {
-  //       carouselRef.current?.snapToNext();
-  //     }, 3000);
-  //   }
-
-  //   return () => {
-  //     if (autoPlayRef.current) clearTimeout(autoPlayRef.current);
-  //   };
-  // }, [isCarouselPaused, items]);
 
   const chartData = () => {
     const statusCounts = {
@@ -131,7 +117,7 @@ function TicketsGraficScreen() {
         loop
         width={screenWidth}
         height={200}
-        autoPlay={true}
+        autoPlay={isFocused}
         data={top5Tickets}
         scrollAnimationDuration={3000}
         onSnapToItem={(index) => console.log("current index:", index)}

@@ -11,9 +11,10 @@ type ListComponentProps = {
   items: ListItem[];
   onItemPress?: (item: ListItem) => void;
   onDeletePress?: (item: ListItem) => void;
+  ListFooterComponent?: React.ReactElement;
 };
 
-const ListComponent: React.FC<ListComponentProps> = ({ items, onItemPress, onDeletePress }) => {
+const ListComponent: React.FC<ListComponentProps> = ({ items, onItemPress, onDeletePress, ListFooterComponent }) => {
   const renderItem = ({ item }: { item: ListItem }) => (
     <TouchableOpacity
       onPress={() => onItemPress?.(item)} // Chama onItemPress com o item atual, se definido
@@ -36,7 +37,7 @@ const ListComponent: React.FC<ListComponentProps> = ({ items, onItemPress, onDel
     </TouchableOpacity>
   );
 
-  return <FlatList data={items} renderItem={renderItem} keyExtractor={(item) => String(item.id)} />;
+  return <FlatList style={styles.list} data={items} renderItem={renderItem} keyExtractor={(item) => String(item.id)} ListFooterComponent={ListFooterComponent} />;
 };
 
 // Estilos para o componente
@@ -55,6 +56,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
     elevation: 4,
+  },
+  list: {
+    backgroundColor: "#dadada",
   },
   itemText: {
     fontSize: 16,

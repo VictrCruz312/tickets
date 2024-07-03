@@ -4,6 +4,7 @@ export interface Ticket {
   id: number;
   titulo: string;
   descricao: string;
+  descricaoEncerramento: string;
   solicitante: string;
   dataAbertura: string; // ou Date, se você estiver convertendo strings de data para objetos Date
   status: string;
@@ -27,11 +28,13 @@ export async function initDBAsync() {
       password TEXT
     );
   `);
+
   await db.execAsync(`
     CREATE TABLE IF NOT EXISTS tickets (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       titulo TEXT NOT NULL,
       descricao TEXT,
+      descricaoEncerramento TEXT,
       solicitante TEXT,
       dataAbertura DATETIME,
       status TEXT
@@ -77,6 +80,7 @@ export async function getTicketsAsync(): Promise<Ticket[]> {
       id: row.id,
       titulo: row.titulo,
       descricao: row.descricao,
+      descricaoEncerramento: row.descricaoEncerramento,
       solicitante: row.solicitante,
       dataAbertura: row.dataAbertura,
       status: row.status,
@@ -95,6 +99,7 @@ export async function getTicketDetailsAsync(ticketId: number): Promise<Ticket | 
       id: row.id,
       titulo: row.titulo,
       descricao: row.descricao,
+      descricaoEncerramento: row.descricaoEncerramento,
       solicitante: row.solicitante,
       dataAbertura: row.dataAbertura,
       status: row.status,
@@ -107,9 +112,9 @@ export async function getTicketDetailsAsync(ticketId: number): Promise<Ticket | 
 export async function insertFakeTickets() {
   const db = await SQLite.openDatabaseAsync("db.database");
   const result: any = await db.getAllAsync("SELECT COUNT(*) AS CONTAR FROM tickets");
-  let contador = result[0]?.contar;
+  let contador = result[0]?.CONTAR;
 
-  if (contador < 15) {
+  if (contador < 5) {
     for (let i = 1; i <= 10; i++) {
       await insertTicketAsync(
         `Titulo ${i}`,
@@ -168,4 +173,8 @@ export async function emailExistsAsync(email: string): Promise<boolean> {
   const db = await SQLite.openDatabaseAsync("db.database");
   const result = await db.getAllAsync("SELECT email FROM user WHERE email = ?", [email]);
   return result.length > 0;
+}
+export async function closeTicketAsync(ticketId: number, descricaoEncerramento: string, status: string): Promise<void> {
+  const db = await SQLite.openDatabaseAsync("db.database");
+  await db.runAsync("UPDATE tickets SET status = ?, descricaoEncerramento = ? WHERE id = ?", [status, descricaoEncerramento, ticketId]);
 }

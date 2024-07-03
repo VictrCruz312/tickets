@@ -17,7 +17,7 @@ export interface InputProps extends TextInputProps {
 }
 
 const Input = forwardRef<TextInput, InputProps>(
-  ({ id, type, label, required = false, value, validate, onChangeText, ...rest }: InputProps, ref) => {
+  ({ id, type, label, required = false, value, validate, onChangeText, style, ...rest }: InputProps, ref) => {
     let keyboardType: TextInputProps["keyboardType"] = "default";
     let secureTextEntry = false;
     const { setFieldValidity, isContextAvailable, validationTriggered, resetValidationTrigger } = useForm();
@@ -41,6 +41,7 @@ const Input = forwardRef<TextInput, InputProps>(
       if (isContextAvailable && valid !== result.valid) {
         setFieldValidity(id, result.valid);
       }
+
     }, [value, required, validate, id]);
 
     useEffect(() => {
@@ -76,7 +77,7 @@ const Input = forwardRef<TextInput, InputProps>(
           keyboardType={keyboardType}
           secureTextEntry={secureTextEntry}
           onChangeText={handleChange}
-          style={[styles.input, { borderColor }]}
+          style={[styles.input, { borderColor }, style]}
           ref={ref}
         />
         {!valid && showError && (

@@ -1,5 +1,5 @@
 import React, { forwardRef, useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import { useForm } from "../../context/FormContext";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Picker as RNPicker } from "@react-native-picker/picker";
@@ -17,10 +17,11 @@ export interface PickerProps {
   onValueChange: (itemValue: string | number, itemIndex: number) => void;
   items: { label: string; value: string | number }[];
   validate?: (value: PickerProps["selectedValue"]) => TypeValidate;
+  style?: StyleProp<ViewStyle>;
 }
 
 const Picker = forwardRef<RNPicker<any>, PickerProps>((props, ref) => {
-   const { id, label, required = false, selectedValue, onValueChange, items, validate } = props;
+   const { id, label, required = false, selectedValue, onValueChange, items, validate, style } = props;
    const { setFieldValidity, isContextAvailable, validationTriggered, resetValidationTrigger } = useForm();
    const [{ valid, msg }, setValidationResult] = useState<{ valid: boolean; msg?: string }>({ valid: true });
    const [showError, setShowError] = useState(false);
@@ -52,7 +53,7 @@ const Picker = forwardRef<RNPicker<any>, PickerProps>((props, ref) => {
    const borderColor = !showError ? "gray" : valid ? "#007e7c" : "#dc3545";
 
    return (
-     <View style={[styles.container, { borderColor }]}>
+     <View style={[styles.container, { borderColor }, style]}>
        {label && <Text style={styles.label}>{label + (required ? " *" : "")}</Text>}
        <RNPicker
          selectedValue={selectedValue}
