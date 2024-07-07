@@ -8,12 +8,9 @@ import { useSQLiteContext } from "expo-sqlite";
 import { Ticket, useDatabase } from "../../../context/DatabaseContext";
 
 type TypeRootStackParamList = {
-  Detalhes: { ticketId: string | number };
-  Tickets: { newTicketAdded: string | number };
-  AddTicket: string;
-};
-type TypeRootStackParamList1 = {
-  Tickets: { newTicketAdded: string | number };
+  Detalhes?: { ticketId: string | number };
+  Tickets?: string;
+  AddTicket?: string;
 };
 
 function TicketsListScreen() {

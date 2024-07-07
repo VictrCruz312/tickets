@@ -5,7 +5,6 @@ import Input from "../../../components/Input";
 import Button from "../../../components/Button";
 import { useForm } from "../../../context/FormContext";
 import { useDatabase } from "../../../context/DatabaseContext";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 type TypeRootStackParamList = {
   Tickets: { newTicketAdded: boolean | undefined };
