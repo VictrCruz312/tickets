@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, StyleSheet, Alert, Image, TextInput } from "react-native";
+import { View, StyleSheet, Image, TextInput } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import Toast from "react-native-toast-message";
 import { useAuth } from "../../context/AuthContext";
-import { FormProvider, useForm } from "../../context/FormContext";
-import { useSQLiteContext } from "expo-sqlite";
+import { useForm } from "../../context/FormContext";
 import { useDatabase } from "../../context/DatabaseContext";
 
 type TypeRootStackParamList = {

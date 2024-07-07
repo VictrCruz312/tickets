@@ -6,7 +6,6 @@ import Input from "../../../components/Input";
 import Picker from "../../../components/Picker";
 import ListComponent from "../../../components/ListComponent";
 import Toast from "react-native-toast-message";
-import { useSQLiteContext } from "expo-sqlite";
 import { Ticket, useDatabase } from "../../../context/DatabaseContext";
 
 type TypeRootStackParamList = {
@@ -117,7 +116,6 @@ function TicketDetailsScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: "#dadada",
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",

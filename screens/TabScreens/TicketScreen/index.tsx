@@ -1,10 +1,9 @@
-import { NavigationProp, RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import ListComponent from "../../../components/ListComponent";
 import { useCallback, useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useSQLiteContext } from "expo-sqlite";
 import { Ticket, useDatabase } from "../../../context/DatabaseContext";
 
 type TypeRootStackParamList = {
@@ -17,7 +16,7 @@ function TicketsListScreen() {
   const navigation = useNavigation<NavigationProp<TypeRootStackParamList>>();
   const [refreshing, setRefreshing] = useState(false);
 
-  const { getTicketsAsync, deleteTicketAsync, items } = useDatabase();
+  const { getTicketsAsync, deleteTicketAsync, items, setItems } = useDatabase();
 
   const loadTickets = useCallback(async () => {
     setRefreshing(true);
@@ -30,6 +29,7 @@ function TicketsListScreen() {
   useEffect(() => {
     loadTickets();
   }, [navigation]);
+
   return (
     <View style={{ flex: 1 }}>
       <ListComponent

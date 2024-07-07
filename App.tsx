@@ -61,17 +61,7 @@ function withProtectedRoute(Component: ComponentType<PropsWithChildren<any>>) {
   };
 }
 
-// const DatabaseComponent: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-//   const { initDBAsync } = useDatabase();
-
-//   return (
-
-//   );
-// };
-
 async function migrateDbIfNeeded(db: SQLiteDatabase) {
-  // const { setDb } = useDatabase();
-
   const DATABASE_VERSION = 1;
   let row = await db.getFirstAsync<{ user_version: number }>("PRAGMA user_version");
   let currentDbVersion = row?.user_version || 0;
@@ -104,25 +94,9 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
       );`);
   }
   await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);
-
-  // setDb(db);
 }
 
 export default function App() {
-  // useEffect(() => {
-  //   async function init() {
-  //     await initDBAsync();
-  //     await insertFakeTickets();
-  //   }
-
-  //   try {
-  //     init();
-  //     console.log("Banco de dados inicializado com sucesso");
-  //   } catch (error) {
-  //     console.log("Falha ao inicializar o banco de dados: " + error);
-  //   }
-  // }, []);
-
   return (
     <Suspense fallback={<LoadingFallback />}>
       <SQLiteProvider databaseName="db.database" useSuspense onInit={migrateDbIfNeeded}>

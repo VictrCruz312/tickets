@@ -1,6 +1,5 @@
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
 import TicketsListScreen from "../TabScreens/TicketScreen";
 import TicketDetailsScreen from "../TabScreens/TicketDetailScreen";
 import TicketsGraficScreen from "../TabScreens/TicketGraficsScreen";

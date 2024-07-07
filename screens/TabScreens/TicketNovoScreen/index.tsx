@@ -27,7 +27,7 @@ function AddTicketScreen() {
       if (!isFormValid()) {
         return;
       }
-      await insertTicketAsync(titulo, descricao, solicitante, new Date().toISOString(), "1");
+      await insertTicketAsync(titulo, descricao, solicitante, new Date().toISOString(), "0");
 
       navigation.goBack();
     } catch (error) {

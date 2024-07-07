@@ -96,7 +96,7 @@ export const DatabaseProvider = ({ children }: DatabaseProviderProps) => {
         dataAbertura,
         status,
       };
-      setItems((prevItems) => [...prevItems, newTicket]);
+      setItems((prevItems) => [newTicket,...prevItems]);
       return true;
     }
 
@@ -104,7 +104,7 @@ export const DatabaseProvider = ({ children }: DatabaseProviderProps) => {
   }
 
   async function getTicketsAsync(): Promise<boolean> {
-    const rows: any = await db?.getAllAsync("SELECT * FROM tickets");
+    const rows: any = await db?.getAllAsync("SELECT * FROM tickets order by dataAbertura DESC");
 
     const tickets: Ticket[] = rows.map((row: any): Ticket => {
       return {
@@ -201,7 +201,6 @@ export const DatabaseProvider = ({ children }: DatabaseProviderProps) => {
       descricaoEncerramento,
       ticketId,
     ]);
-console.log(status)
     setItems((prevItems) =>
       prevItems.map((item) =>
         item.id === ticketId ? { ...item, status, descricaoEncerramento } : item
