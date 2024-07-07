@@ -12,9 +12,11 @@ type ListComponentProps = {
   onItemPress?: (item: ListItem) => void;
   onDeletePress?: (item: ListItem) => void;
   ListFooterComponent?: React.ReactElement;
+  loadItens?: () => void;
+  refreshing?: boolean;
 };
 
-const ListComponent: React.FC<ListComponentProps> = ({ items, onItemPress, onDeletePress, ListFooterComponent }) => {
+const ListComponent: React.FC<ListComponentProps> = ({ items, onItemPress, onDeletePress, ListFooterComponent, loadItens, refreshing }) => {
   const renderItem = ({ item }: { item: ListItem }) => (
     <TouchableOpacity
       onPress={() => onItemPress?.(item)} // Chama onItemPress com o item atual, se definido
@@ -37,7 +39,17 @@ const ListComponent: React.FC<ListComponentProps> = ({ items, onItemPress, onDel
     </TouchableOpacity>
   );
 
-  return <FlatList style={styles.list} data={items} renderItem={renderItem} keyExtractor={(item) => String(item.id)} ListFooterComponent={ListFooterComponent} />;
+  return (
+    <FlatList
+      style={styles.list}
+      data={items}
+      renderItem={renderItem}
+      keyExtractor={(item) => String(item.id)}
+      ListFooterComponent={ListFooterComponent}
+      onRefresh={loadItens}
+      refreshing={refreshing}
+    />
+  );
 };
 
 // Estilos para o componente

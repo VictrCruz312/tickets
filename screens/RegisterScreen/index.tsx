@@ -4,10 +4,11 @@ import { StackNavigationProp } from "@react-navigation/stack";
 
 import Button from "../../components/Button";
 import Input from "../../components/Input";
-import { RegisterUserAsync, emailExistsAsync, loginUserAsync } from "../../database";
 import Toast from "react-native-toast-message";
 import { useAuth } from "../../context/AuthContext";
 import { FormProvider, useForm } from "../../context/FormContext";
+import { useSQLiteContext } from "expo-sqlite";
+import { useDatabase } from "../../context/DatabaseContext";
 
 type TypeRootStackParamList = {
   Login: undefined;
@@ -28,6 +29,7 @@ function RegisterScreen({ navigation }: TypePropsNavigation) {
   const { setIsLoggedIn } = useAuth();
   const { isFormValid } = useForm();
   const [emailError, setEmailError] = useState('');
+  const { emailExistsAsync, RegisterUserAsync } = useDatabase();
 
 
   // Refs para os campos de entrada

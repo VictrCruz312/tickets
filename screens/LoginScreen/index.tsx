@@ -4,9 +4,9 @@ import { StackNavigationProp } from "@react-navigation/stack";
 
 import Button from "../../components/Button";
 import Input from "../../components/Input";
-import { loginUserAsync } from "../../database";
 import Toast from "react-native-toast-message";
 import { useAuth } from "../../context/AuthContext";
+import { useDatabase } from "../../context/DatabaseContext";
 
 type TypeRootStackParamList = {
   Login: undefined;
@@ -24,6 +24,8 @@ function LoginScreen({ navigation }: TypePropsNavigation) {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const { isLoggedIn, setIsLoggedIn } = useAuth();
+
+  const { loginUserAsync } = useDatabase();
 
   // Refs para os campos de entrada
   const passwordRef = useRef<TextInput>(null);

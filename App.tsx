@@ -4,8 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen, { TypePropsNavigation } from "./screens/LoginScreen";
 import HomeScreen from "./screens/HomeScreen";
-import { ComponentType, PropsWithChildren, useEffect } from "react";
-import { initDBAsync, insertFakeTickets } from "./database";
+import { ComponentType, PropsWithChildren, Suspense, useEffect } from "react";
 import Toast from "react-native-toast-message";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -15,6 +14,9 @@ import { enableScreens } from "react-native-screens";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import RegisterScreen from "./screens/RegisterScreen";
 import { FormProvider } from "./context/FormContext";
+import { SQLiteDatabase, SQLiteProvider } from "expo-sqlite";
+import LoadingFallback from "./components/LoadingFallback";
+import { DatabaseProvider, useDatabase } from "./context/DatabaseContext";
 
 enableScreens();
 
@@ -58,51 +60,105 @@ function withProtectedRoute(Component: ComponentType<PropsWithChildren<any>>) {
     return <Component {...props} />;
   };
 }
-export default function App() {
-  useEffect(() => {
-    async function init() {
-      await initDBAsync();
-      await insertFakeTickets();
-    }
 
-    try {
-      init();
-      console.log("Banco de dados inicializado com sucesso");
-    } catch (error) {
-      console.log("Falha ao inicializar o banco de dados: " + error);
-    }
-  }, []);
+// const DatabaseComponent: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+//   const { initDBAsync } = useDatabase();
+
+//   return (
+
+//   );
+// };
+
+async function migrateDbIfNeeded(db: SQLiteDatabase) {
+  // const { setDb } = useDatabase();
+
+  const DATABASE_VERSION = 1;
+  let row = await db.getFirstAsync<{ user_version: number }>("PRAGMA user_version");
+  let currentDbVersion = row?.user_version || 0;
+
+  if (currentDbVersion >= DATABASE_VERSION) {
+    return;
+  }
+  if (currentDbVersion === 0) {
+    currentDbVersion = 1;
+  }
+
+  if (currentDbVersion === 1) {
+    await db.execAsync(`
+    CREATE TABLE IF NOT EXISTS user (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT,
+      email TEXT UNIQUE,
+      password TEXT
+    );`);
+
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS tickets (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        titulo TEXT NOT NULL,
+        descricao TEXT,
+        descricaoEncerramento TEXT,
+        solicitante TEXT,
+        dataAbertura DATETIME,
+        status TEXT
+      );`);
+  }
+  await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);
+
+  // setDb(db);
+}
+
+export default function App() {
+  // useEffect(() => {
+  //   async function init() {
+  //     await initDBAsync();
+  //     await insertFakeTickets();
+  //   }
+
+  //   try {
+  //     init();
+  //     console.log("Banco de dados inicializado com sucesso");
+  //   } catch (error) {
+  //     console.log("Falha ao inicializar o banco de dados: " + error);
+  //   }
+  // }, []);
 
   return (
-    <AuthProvider>
-      <SafeAreaProvider>
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName="Home">
-            <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Logar" }} />
-            <Stack.Screen name="Register" options={{ title: "Registrar" }}>
-              {(props) => (
-                <FormProvider>
-                  <RegisterScreen {...props} />
-                </FormProvider>
-              )}
-            </Stack.Screen>
-            <Stack.Screen
-              name="Home"
-              component={withProtectedRoute(DrawerNavigator)}
-              options={{
-                headerTitle: () => (
-                  <View style={styles.headerTitle}>
-                    <Image source={require("./assets/images/logo.png")} style={styles.logo} />
-                    <Text style={styles.headerText}>TI-ckets</Text>
-                  </View>
-                ),
-              }}
-            />
-          </Stack.Navigator>
-          <Toast />
-        </NavigationContainer>
-      </SafeAreaProvider>
-    </AuthProvider>
+    <Suspense fallback={<LoadingFallback />}>
+      <SQLiteProvider databaseName="db.database" useSuspense onInit={migrateDbIfNeeded}>
+        <DatabaseProvider>
+          <AuthProvider>
+            <SafeAreaProvider>
+              <NavigationContainer>
+                <Stack.Navigator initialRouteName="Home">
+                  <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Logar" }} />
+                  <Stack.Screen name="Register" options={{ title: "Registrar" }}>
+                    {(props) => (
+                      <FormProvider>
+                        <RegisterScreen {...props} />
+                      </FormProvider>
+                    )}
+                  </Stack.Screen>
+                  <Stack.Screen
+                    name="Home"
+                    component={withProtectedRoute(DrawerNavigator)}
+                    options={{
+                      headerTitle: () => (
+                        <View style={styles.headerTitle}>
+                          <Image source={require("./assets/images/logo.png")} style={styles.logo} />
+                          <Text style={styles.headerText}>TI-ckets</Text>
+                        </View>
+                      ),
+                    }}
+                  />
+                </Stack.Navigator>
+                <Toast />
+              </NavigationContainer>
+            </SafeAreaProvider>
+          </AuthProvider>
+        </DatabaseProvider>
+      </SQLiteProvider>
+    </Suspense>
   );
 }
 

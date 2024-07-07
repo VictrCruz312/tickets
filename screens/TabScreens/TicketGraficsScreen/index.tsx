@@ -1,25 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Dimensions, Text, StyleSheet } from "react-native";
 import { PieChart } from "react-native-chart-kit";
-import { getTicketsAsync } from "../../../database";
-import { Ticket } from "../../../database";
 import Carousel from "react-native-reanimated-carousel";
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from "@react-navigation/native";
+import { useDatabase } from "../../../context/DatabaseContext";
 
 const screenWidth = Dimensions.get("window").width;
 
 function TicketsGraficScreen() {
-  const [items, setItems] = useState<Ticket[]>([]);
   const isFocused = useIsFocused();
-
-  useEffect(() => {
-    const fetchTickets = async () => {
-      const tickets = await getTicketsAsync();
-      setItems(tickets);
-    };
-
-    fetchTickets();
-  }, []);
+  const { items } = useDatabase();
 
   const chartData = () => {
     const statusCounts = {
@@ -162,16 +152,16 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     padding: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginVertical: 10,
   },
   descriptionText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   summaryContainer: {
-    backgroundColor: '#f2f2f2',
+    backgroundColor: "#f2f2f2",
     borderRadius: 10,
     padding: 20,
     marginVertical: 20,
@@ -186,7 +176,7 @@ const styles = StyleSheet.create({
   },
   summaryTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   summaryText: {
